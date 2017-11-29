@@ -6,25 +6,16 @@ module Drafting
       raise ArgumentError unless options.is_a?(Hash)
       raise ArgumentError unless options.keys.all? { |k| ALLOWED_DRAFT_OPTION_KEYS.include?(k) }
 
-      class_attribute :draft_parent
+      unless method_defined? :drafts
+        class_eval do
+          def drafts
+            Draft.where(parent: self)
+          end
 
-      if options[:parent]
-        parent_class = self.reflect_on_all_associations(:belongs_to).find { |a| a.name == options[:parent] }.try(:klass)
-        raise ArgumentError unless parent_class
-
-        unless parent_class.method_defined? :drafts
-          parent_class.class_eval do
-            def drafts(user)
-              Draft.where(user: user, parent: self)
-            end
-
-            def self.child_drafts(user)
-              Draft.where(user: user, parent_type: self.base_class.name)
-            end
+          def self.child_drafts
+            Draft.where(parent_type: self.base_class.name)
           end
         end
-
-        self.draft_parent = options[:parent]
       end
 
       include Drafting::InstanceMethods

@@ -8,23 +8,23 @@ describe Drafting::ClassMethods do
 
   describe 'drafts' do
     it 'should find Draft objects for user' do
-      message.save_draft(user)
+      message.save_draft
 
-      expect(Message.drafts(user).count).to eq(1)
-      expect(Message.drafts(user).first).to be_a(Draft)
+      expect(Message.drafts.count).to eq(1)
+      expect(Message.drafts.first).to be_a(Draft)
     end
 
     it 'should find Draft objects without user' do
       page.save_draft
 
-      expect(Page.drafts(nil).count).to eq(1)
-      expect(Page.drafts(nil).first).to be_a(Draft)
+      expect(Page.drafts.count).to eq(1)
+      expect(Page.drafts.first).to be_a(Draft)
     end
   end
 
   describe 'from_draft' do
     context 'with parent' do
-      let(:draft_id) { message.save_draft(user); message.draft_id }
+      let(:draft_id) { message.save_draft; message.draft_id }
 
       it 'should build new object' do
         new_message = Message.from_draft(draft_id)
@@ -51,7 +51,7 @@ describe Drafting::ClassMethods do
     end
 
     context 'without parent' do
-      let(:draft_id) { page.save_draft(user); page.draft_id }
+      let(:draft_id) { page.save_draft; page.draft_id }
 
       it 'should build new object' do
         new_page = Page.from_draft(draft_id)
@@ -84,7 +84,7 @@ describe Drafting::ClassMethods do
     end
 
     it "should fail for other draft target" do
-      message.save_draft(user)
+      message.save_draft
 
       expect {
         Page.from_draft(message.draft_id)
