@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Draft do
   let(:user) { FactoryBot.create(:user) }
   let(:topic) { FactoryBot.create(:topic) }
-  let(:message1) { topic.messages.build user: user, content: 'foo1' }
-  let(:message2) { topic.messages.build user: user, content: 'foo2' }
+  let(:message1) { topic.messages.create user: user, content: 'foo1' }
+  let(:message2) { topic.messages.create user: user, content: 'foo2' }
 
   describe '#restore' do
-    before { message1.save_draft(user) }
+    before { message1.save_draft }
 
     subject(:restored_draft) { Draft.find(message1.draft_id).restore }
 
@@ -20,8 +20,8 @@ describe Draft do
     before do
       Draft.delete_all
 
-      message1.save_draft(user)
-      message2.save_draft(user)
+      message1.save_draft
+      message2.save_draft
     end
 
     subject(:restored_drafts) { Draft.restore_all }

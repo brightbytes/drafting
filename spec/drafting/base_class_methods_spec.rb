@@ -27,11 +27,5 @@ describe Drafting::BaseClassMethods do
         Post.has_drafts bar: 'baz'
       }.to raise_error(ArgumentError)
     end
-
-    it "should fail for non-existing parent" do
-      expect {
-        Post.has_drafts parent: :bar
-      }.to raise_error(ArgumentError)
-    end
   end
 end
