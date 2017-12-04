@@ -8,10 +8,6 @@ module Drafting
 
       unless method_defined? :drafts
         class_eval do
-          def drafts
-            Draft.where(parent: self)
-          end
-
           def self.child_drafts
             Draft.where(parent_type: self.base_class.name)
           end
@@ -21,8 +17,10 @@ module Drafting
       include Drafting::InstanceMethods
       extend Drafting::ClassMethods
 
-      attr_accessor :draft_id
+      attr_writer :draft_id
       after_create :clear_draft
+
+      has_many :drafts, as: :parent
     end
   end
 end

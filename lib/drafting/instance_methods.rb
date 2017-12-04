@@ -31,6 +31,14 @@ module Drafting
       end
     end
 
+    def draft_id
+      @draft_id || attributes['draft_id']
+    end
+
+    def draft
+      @draft ||= Draft.find_by(id: draft_id)
+    end
+
   private
 
     def clear_draft
